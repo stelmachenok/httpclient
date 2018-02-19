@@ -63,7 +63,39 @@ public class Gui {
             responseTextArea.setText(parsedResponse);
         });
         headButton = new JButton("HEAD");
+        headButton.addActionListener(e -> {
+            String bookId = bookIdField.getText();
+            String page = pageField.getText();
+            String response = null;
+            try {
+                response = client.executeHead(bookId, page);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
+            logTextArea.setText(logTextArea.getText() +
+                "\n----HEAD----\n" +
+                response);
+            String parsedResponse = client.parseHead(response);
+            responseTextArea.setText(parsedResponse);
+        });
         postButton = new JButton("POST");
+        postButton.addActionListener(e -> {
+            String login = loginField.getText();
+            String password = passwordField.getText();
+            String response = null;
+            try {
+                response = client.executePost(login, password);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
+            logTextArea.setText(logTextArea.getText() +
+                "\n----POST----\n" +
+                response);
+            String parsedResponse = client.parsePost(response);
+            responseTextArea.setText(parsedResponse);
+        });
         logTextArea = new JTextArea(30, 30);
         responseTextArea = new JTextArea(30, 30);
         logScrollPane = new JScrollPane(logTextArea);
