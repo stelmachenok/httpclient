@@ -2,6 +2,7 @@ package com.aipos.http.client.gui;
 
 import com.aipos.http.client.controller.Client;
 import com.aipos.http.client.parser.ResponseParser;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -12,16 +13,19 @@ import java.io.IOException;
 public class Gui {
     private JFrame frame;
     private JPanel panel;
-    private JTextField pageField;
-    private JTextField bookIdField;
-    private JTextField loginField;
-    private JTextField passwordField;
+    private JTextArea uriTextArea;
+    private JTextArea headerTextArea;
+    private JTextArea bodyTextArea;
+    private JScrollPane uriScrollPane;
+    private JScrollPane headerScrollPane;
+    private JScrollPane bodyScrollPane;
+
     private JButton getButton;
     private JButton headButton;
     private JButton postButton;
-    private JLabel pageLabel;
-    private JLabel bookIdLabel;
-    private JLabel loginLabel;
+    private JLabel headerLabel;
+    private JLabel uriLabel;
+    private JLabel bodyLabel;
     private JLabel passwordLabel;
     private JLabel responseLabel;
     private JLabel requestLabel;
@@ -35,7 +39,7 @@ public class Gui {
     private Client client;
     private ResponseParser parser;
 
-    public Gui(){
+    public Gui() {
         client = new Client();
         parser = new ResponseParser();
         frame = new JFrame("HTTP Client");
@@ -44,92 +48,95 @@ public class Gui {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         panel = new JPanel(null);
         frame.add(panel);
-        pageField = new JTextField(15);
-        pageField.setFont(new Font("Arial", Font.BOLD, 15));
-        bookIdField = new JTextField(15);
-        bookIdField.setFont(new Font("Arial", Font.BOLD, 15));
-        loginField = new JTextField(15);
-        loginField.setFont(new Font("Arial", Font.BOLD, 15));
-        passwordField = new JTextField(15);
-        passwordField.setFont(new Font("Arial", Font.BOLD, 15));
+        uriTextArea = new JTextArea(15, 15);
+        uriTextArea.setFont(new Font("Arial", Font.BOLD, 15));
+        uriScrollPane = new JScrollPane(uriTextArea);
+        headerTextArea = new JTextArea(15, 15);
+        headerTextArea.setFont(new Font("Arial", Font.BOLD, 15));
+        headerScrollPane = new JScrollPane(headerTextArea);
+        bodyTextArea = new JTextArea(15, 15);
+        bodyTextArea.setFont(new Font("Arial", Font.BOLD, 15));
+        bodyScrollPane = new JScrollPane(bodyTextArea);
         getButton = new JButton("GET");
         getButton.addActionListener(e -> {
-            String bookId = bookIdField.getText();
-            String page = pageField.getText();
-            String request = client.requestGet(bookId, page);
+            String URI = this.uriTextArea.getText();
+            String header = headerTextArea.getText();
+            String request = client.requestGet(URI, header);
             String response = null;
             try {
-                response = client.executeGet(bookId, page);
+                response = client.executeGet(URI, header);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
 
             requestTextArea.setText(requestTextArea.getText() +
-                "\n----GET Request----\n"
-                + request);
+                    "\n----GET Request----\n"
+                    + request);
 
             responseTextArea.setText(responseTextArea.getText() +
-                "\n----GET Response----\n" +
-                response);
+                    "\n----GET Response----\n" +
+                    response);
             String parsedResponse = parser.parseGet(response);
             parsedAnswerTextArea.setText(parsedResponse);
         });
         headButton = new JButton("HEAD");
         headButton.addActionListener(e -> {
-            String bookId = bookIdField.getText();
-            String page = pageField.getText();
-            String request = client.requestHead(bookId, page);
+            String URI = uriTextArea.getText();
+            String header = headerTextArea.getText();
+            String request = client.requestHead(URI, header);
             String response = null;
             try {
-                response = client.executeHead(bookId, page);
+                response = client.executeHead(URI, header);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
 
             requestTextArea.setText(requestTextArea.getText() +
-                "\n----HEAD Request----\n"
-                + request);
+                    "\n----HEAD Request----\n"
+                    + request);
 
             responseTextArea.setText(responseTextArea.getText() +
-                "\n----HEAD Response----\n" +
-                response);
+                    "\n----HEAD Response----\n" +
+                    response);
             String parsedResponse = parser.parseHead(response);
             parsedAnswerTextArea.setText(parsedResponse);
         });
         postButton = new JButton("POST");
         postButton.addActionListener(e -> {
-            String login = loginField.getText();
-            String password = passwordField.getText();
-            String request = client.requestPost(login, password);
+
+            String URI = uriTextArea.getText();
+            String header = headerTextArea.getText();
+            String body = bodyTextArea.getText();
+            String request = client.requestPost(URI, header, body);
             String response = null;
             try {
-                response = client.executePost(login, password);
+                response = client.executePost(URI, header, body);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
 
             requestTextArea.setText(requestTextArea.getText() +
-                "\n----POST Request----\n"
-                + request);
+                    "\n----POST Request----\n"
+                    + request);
 
             responseTextArea.setText(responseTextArea.getText() +
-                "\n----POST Response----\n" +
-                response);
+                    "\n----POST Response----\n" +
+                    response);
             String parsedResponse = parser.parsePost(response);
             parsedAnswerTextArea.setText(parsedResponse);
         });
         responseTextArea = new JTextArea(30, 30);
         parsedAnswerTextArea = new JTextArea(30, 30);
-        requestTextArea = new JTextArea(10,10);
+        requestTextArea = new JTextArea(10, 10);
         logScrollPane = new JScrollPane(responseTextArea);
         responseScrollPane = new JScrollPane(parsedAnswerTextArea);
         requestScrollPane = new JScrollPane(requestTextArea);
-        pageLabel = new JLabel("Page:");
-        pageLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        bookIdLabel = new JLabel("Book ID:");
-        bookIdLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        loginLabel = new JLabel("Login:");
-        loginLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        headerLabel = new JLabel("Header:");
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        uriLabel = new JLabel("URI:");
+        uriLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        bodyLabel = new JLabel("Body:");
+        bodyLabel.setFont(new Font("Arial", Font.BOLD, 20));
         passwordLabel = new JLabel("Password:");
         passwordLabel.setFont(new Font("Arial", Font.BOLD, 20));
         responseLabel = new JLabel("Response:");
@@ -142,14 +149,13 @@ public class Gui {
         getButton.setBounds(0, 0, 100, 50);
         headButton.setBounds(0, 50, 100, 50);
         postButton.setBounds(0, 100, 100, 50);
-        bookIdLabel.setBounds(100, 0, 100, 50);
-        pageLabel.setBounds(300, 0, 100, 50);
-        bookIdField.setBounds(200, 0, 100, 50);
-        pageField.setBounds(400, 0, 100, 50);
-        loginLabel.setBounds(100, 100, 100, 50);
+        uriLabel.setBounds(100, 0, 100, 50);
+        headerLabel.setBounds(300, 0, 100, 50);
+        headerTextArea.setBounds(200, 0, 100, 50);
+        uriTextArea.setBounds(400, 0, 100, 50);
+        bodyLabel.setBounds(100, 100, 100, 50);
         passwordLabel.setBounds(300, 100, 100, 50);
-        loginField.setBounds(200, 100, 100, 50);
-        passwordField.setBounds(400, 100, 100, 50);
+        bodyTextArea.setBounds(200, 100, 100, 50);
         responseLabel.setBounds(0, 150, 100, 50);
         parsedAnswerLabel.setBounds(900, 150, 200, 50);
         requestLabel.setBounds(0, 700, 200, 50);
@@ -158,18 +164,17 @@ public class Gui {
         requestScrollPane.setBounds(0, 750, 800, 200);
 
         panel.add(getButton);
-        panel.add(bookIdField);
-        panel.add(pageField);
+        panel.add(headerTextArea);
+        panel.add(uriTextArea);
         panel.add(headButton);
         panel.add(postButton);
-        panel.add(loginField);
-        panel.add(passwordField);
+        panel.add(bodyTextArea);
         panel.add(logScrollPane);
         panel.add(responseScrollPane);
         panel.add(requestScrollPane);
-        panel.add(pageLabel);
-        panel.add(bookIdLabel);
-        panel.add(loginLabel);
+        panel.add(headerLabel);
+        panel.add(uriLabel);
+        panel.add(bodyLabel);
         panel.add(passwordLabel);
         panel.add(responseLabel);
         panel.add(parsedAnswerLabel);

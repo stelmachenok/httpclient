@@ -19,7 +19,7 @@ public class Client {
     private PrintWriter out;
     private BufferedReader in;
 
-    public String executeGet(String bookId, String page) throws IOException {
+    public String executeGet(String uri, String header) throws IOException {
         InetAddress addres = InetAddress.getByName(url);
 
         Socket socket = new Socket(addres, port);
@@ -27,15 +27,15 @@ public class Client {
         out = new PrintWriter(socket.getOutputStream(), autoflush);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream(), charsetName));
 
-        out.println(requestGet(bookId, page));
+        out.println(requestGet(uri, header));
 
         String response = getResponse();
 
         socket.close();
         return response;
     }
-    
-    public String executeHead(String bookId, String page) throws IOException {
+
+    public String executeHead(String uri, String header) throws IOException {
         InetAddress addres = InetAddress.getByName(url);
 
         Socket socket = new Socket(addres, port);
@@ -43,7 +43,7 @@ public class Client {
         out = new PrintWriter(socket.getOutputStream(), autoflush);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream(), charsetName));
 
-        out.println(requestHead(bookId, page));
+        out.println(requestHead(uri, header));
 
         String response = getResponse();
 
@@ -51,24 +51,24 @@ public class Client {
         return response;
     }
 
-    public String executePost(String login, String pass) throws IOException {
-      InetAddress addres = InetAddress.getByName(url);
+    public String executePost(String uri, String header, String body) throws IOException {
+        InetAddress addres = InetAddress.getByName(url);
 
-      Socket socket = new Socket(addres, port);
-      boolean autoflush = true;
-      out = new PrintWriter(socket.getOutputStream(), autoflush);
-      in = new BufferedReader(new InputStreamReader(socket.getInputStream(), charsetName));
+        Socket socket = new Socket(addres, port);
+        boolean autoflush = true;
+        out = new PrintWriter(socket.getOutputStream(), autoflush);
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream(), charsetName));
 
-      out.println(requestPost(login, pass));
+        out.println(requestPost(uri, header, body));
 
-      String response = getResponse();
+        String response = getResponse();
 
-      socket.close();
-      return response;
+        socket.close();
+        return response;
 
     }
 
-    private String getResponse(){
+    private String getResponse() {
         StringBuilder sb = new StringBuilder();
 
         int i = 0;
@@ -85,28 +85,25 @@ public class Client {
         return sb.toString();
     }
 
-    public String requestGet(String bookId, String page){
-      return "GET /read_book.php?id=" + bookId + "&p=" + page + " HTTP/1.1\n" +
-          "Host: " + url + "\n" +
-          "Connection: close\n" +
-          "\n";
+    public String requestGet(String header, String uri) {
+        return "GET " + uri + " HTTP/1.1\n" +
+                header +
+                "\n";
     }
 
-    public String requestHead(String bookId, String page){
-      return "HEAD /read_book.php?id=" + bookId + "&p=" + page + " HTTP/1.1\n" +
-          "Host: " + url + "\n" +
-          "Connection: close\n" +
-          "\n";
+    public String requestHead(String header, String uri) {
+        return "HEAD " + uri + " HTTP/1.1\n" +
+                header +
+                "\n\n";
     }
 
-    public String requestPost(String login, String pass){
-      int contentLength = basicBodyLength + login.length() + pass.length();
-      return "POST /login.php HTTP/1.1\n" +
-          "Host: loveread.ec\n" +
-          "Connection: Close\n" +
-          "Content-Length: " + contentLength + "\n" +
-          "Content-Type: application/x-www-form-urlencoded\n" +
-          "\n" +
-          "login=" + login + "&password=" + pass + "&submit_enter=submit_enter\n";
+    public String requestPost(String header, String uri, String body) {
+        int contentLength = body.length();
+        return "POST " + uri + " HTTP/1.1\n" +
+                header +
+                "\nContent-Length: " + contentLength +
+                "\n\n" +
+                body +
+                "\n\n";
     }
 }
