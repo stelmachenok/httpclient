@@ -26,15 +26,11 @@ public class Gui {
     private JLabel headerLabel;
     private JLabel uriLabel;
     private JLabel bodyLabel;
-    private JLabel passwordLabel;
     private JLabel responseLabel;
     private JLabel requestLabel;
-    private JLabel parsedAnswerLabel;
     private JScrollPane logScrollPane;
-    private JScrollPane responseScrollPane;
     private JScrollPane requestScrollPane;
     private JTextArea responseTextArea;
-    private JTextArea parsedAnswerTextArea;
     private JTextArea requestTextArea;
     private Client client;
     private ResponseParser parser;
@@ -77,7 +73,6 @@ public class Gui {
                     "\n----GET Response----\n" +
                     response);
             String parsedResponse = parser.parseGet(response);
-            parsedAnswerTextArea.setText(parsedResponse);
         });
         headButton = new JButton("HEAD");
         headButton.addActionListener(e -> {
@@ -99,7 +94,6 @@ public class Gui {
                     "\n----HEAD Response----\n" +
                     response);
             String parsedResponse = parser.parseHead(response);
-            parsedAnswerTextArea.setText(parsedResponse);
         });
         postButton = new JButton("POST");
         postButton.addActionListener(e -> {
@@ -123,13 +117,10 @@ public class Gui {
                     "\n----POST Response----\n" +
                     response);
             String parsedResponse = parser.parsePost(response);
-            parsedAnswerTextArea.setText(parsedResponse);
         });
         responseTextArea = new JTextArea(30, 30);
-        parsedAnswerTextArea = new JTextArea(30, 30);
         requestTextArea = new JTextArea(10, 10);
         logScrollPane = new JScrollPane(responseTextArea);
-        responseScrollPane = new JScrollPane(parsedAnswerTextArea);
         requestScrollPane = new JScrollPane(requestTextArea);
         headerLabel = new JLabel("Header:");
         headerLabel.setFont(new Font("Arial", Font.BOLD, 20));
@@ -137,48 +128,38 @@ public class Gui {
         uriLabel.setFont(new Font("Arial", Font.BOLD, 20));
         bodyLabel = new JLabel("Body:");
         bodyLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        passwordLabel = new JLabel("Password:");
-        passwordLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        responseLabel = new JLabel("Response:");
-        responseLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        parsedAnswerLabel = new JLabel("Parsed answer:");
-        parsedAnswerLabel.setFont(new Font("Arial", Font.BOLD, 20));
         requestLabel = new JLabel("Request:");
         requestLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        responseLabel = new JLabel("Response:");
+        responseLabel.setFont(new Font("Arial", Font.BOLD, 20));
 
         getButton.setBounds(0, 0, 100, 50);
         headButton.setBounds(0, 50, 100, 50);
         postButton.setBounds(0, 100, 100, 50);
-        uriLabel.setBounds(100, 0, 100, 50);
+        uriLabel.setBounds(800, 150, 100, 50);
         headerLabel.setBounds(300, 0, 100, 50);
-        headerTextArea.setBounds(200, 0, 100, 50);
-        uriTextArea.setBounds(400, 0, 100, 50);
+        uriScrollPane.setBounds(800, 200, 800, 200);
+        headerScrollPane.setBounds(800, 450, 800, 250);
+        bodyScrollPane.setBounds(800, 750, 800, 200);
         bodyLabel.setBounds(100, 100, 100, 50);
-        passwordLabel.setBounds(300, 100, 100, 50);
-        bodyTextArea.setBounds(200, 100, 100, 50);
         responseLabel.setBounds(0, 150, 100, 50);
-        parsedAnswerLabel.setBounds(900, 150, 200, 50);
         requestLabel.setBounds(0, 700, 200, 50);
         logScrollPane.setBounds(0, 200, 800, 500);
-        responseScrollPane.setBounds(900, 200, 800, 500);
         requestScrollPane.setBounds(0, 750, 800, 200);
 
         panel.add(getButton);
-        panel.add(headerTextArea);
-        panel.add(uriTextArea);
         panel.add(headButton);
         panel.add(postButton);
-        panel.add(bodyTextArea);
         panel.add(logScrollPane);
-        panel.add(responseScrollPane);
         panel.add(requestScrollPane);
         panel.add(headerLabel);
         panel.add(uriLabel);
         panel.add(bodyLabel);
-        panel.add(passwordLabel);
-        panel.add(responseLabel);
-        panel.add(parsedAnswerLabel);
         panel.add(requestLabel);
+        panel.add(responseLabel);
+        panel.add(uriScrollPane);
+        panel.add(headerScrollPane);
+        panel.add(bodyScrollPane);
 
         panel.updateUI();
     }

@@ -3,7 +3,7 @@ package com.aipos.http.client.parser.util;
 /**
  * @author maksim.stelmachonak
  */
-public class ResponseParserConst {
+public class ParserConst {
   public static final String TITLE_BEGIN = "<title>";
   public static final String TITLE_END = "</title>";
   public static final String TEXT_BEGIN = "<p class=MsoNormal>";

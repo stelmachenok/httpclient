@@ -1,6 +1,6 @@
 package com.aipos.http.client.parser;
 
-import static com.aipos.http.client.parser.util.ResponseParserConst.*;
+import static com.aipos.http.client.parser.util.ParserConst.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

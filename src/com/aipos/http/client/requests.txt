@@ -1,0 +1,17 @@
+POST /login.php HTTP/1.1
+Host: loveread.ec
+Connection: Close
+Content-Type: application/x-www-form-urlencoded
+
+login=maxon1408&password=maxon1408&submit_enter=submit_enter
+
+
+GET /read_book.php?id=7468&p=1 HTTP/1.1
+Host: loveread.ec
+Connection: close
+
+
+HEAD /read_book.php?id=7468&p=1 HTTP/1.1
+Host: loveread.ec
+Connection: close
+
