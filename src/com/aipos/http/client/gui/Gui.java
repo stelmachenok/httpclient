@@ -44,14 +44,14 @@ public class Gui {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         panel = new JPanel(null);
         frame.add(panel);
-        pageField = new JTextField(5);
-        pageField.setFont(new Font("Arial", Font.BOLD, 20));
-        bookIdField = new JTextField(5);
-        bookIdField.setFont(new Font("Arial", Font.BOLD, 20));
-        loginField = new JTextField(20);
-        loginField.setFont(new Font("Arial", Font.BOLD, 20));
-        passwordField = new JTextField(20);
-        passwordField.setFont(new Font("Arial", Font.BOLD, 20));
+        pageField = new JTextField(15);
+        pageField.setFont(new Font("Arial", Font.BOLD, 15));
+        bookIdField = new JTextField(15);
+        bookIdField.setFont(new Font("Arial", Font.BOLD, 15));
+        loginField = new JTextField(15);
+        loginField.setFont(new Font("Arial", Font.BOLD, 15));
+        passwordField = new JTextField(15);
+        passwordField.setFont(new Font("Arial", Font.BOLD, 15));
         getButton = new JButton("GET");
         getButton.addActionListener(e -> {
             String bookId = bookIdField.getText();
@@ -174,7 +174,6 @@ public class Gui {
         panel.add(responseLabel);
         panel.add(parsedAnswerLabel);
         panel.add(requestLabel);
-
 
         panel.updateUI();
     }
