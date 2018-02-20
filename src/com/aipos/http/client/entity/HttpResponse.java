@@ -40,4 +40,9 @@ public class HttpResponse {
     public void setHeader(String header) {
         this.header = header;
     }
+
+    @Override
+    public String toString() {
+        return "HTTP/1.1 " + code + " " + message + "\n" + header + "";
+    }
 }

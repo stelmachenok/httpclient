@@ -12,12 +12,19 @@ public class HttpRequest {
     public HttpRequest() {
     }
 
-    public HttpRequest(CommandType command, String uri, String header, String body) {
+  public HttpRequest(CommandType command, String uri, String header) {
+    this.command = command;
+    this.uri = uri;
+    this.header = header;
+  }
+
+  public HttpRequest(CommandType command, String uri, String header, String body) {
         this.command = command;
         this.uri = uri;
         this.header = header;
         this.body = body;
     }
+
 
     public CommandType getCommand() {
         return command;
@@ -49,5 +56,11 @@ public class HttpRequest {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    @Override
+    public String toString() {
+        return command.getName() + " " + uri + " HTTP/1.1\n" + header + "\n\n" +
+            ((body == null || body.equals("")) ? "" : (body + "\n\n"));
     }
 }

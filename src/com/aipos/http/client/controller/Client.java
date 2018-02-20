@@ -1,5 +1,8 @@
 package com.aipos.http.client.controller;
 
+import com.aipos.http.client.entity.HttpRequest;
+import com.aipos.http.client.entity.HttpResponse;
+import com.aipos.http.client.parser.impl.ResponseParserImpl;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,8 +21,9 @@ public class Client {
     private final int port = 80;
     private PrintWriter out;
     private BufferedReader in;
+    private ResponseParserImpl responseParser = new ResponseParserImpl();
 
-    public String executeGet(String uri, String header) throws IOException {
+    public HttpResponse executeRequest(HttpRequest request) throws IOException {
         InetAddress addres = InetAddress.getByName(url);
 
         Socket socket = new Socket(addres, port);
@@ -27,45 +31,12 @@ public class Client {
         out = new PrintWriter(socket.getOutputStream(), autoflush);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream(), charsetName));
 
-        out.println(requestGet(uri, header));
+        out.println(request.toString());
 
-        String response = getResponse();
-
-        socket.close();
-        return response;
-    }
-
-    public String executeHead(String uri, String header) throws IOException {
-        InetAddress addres = InetAddress.getByName(url);
-
-        Socket socket = new Socket(addres, port);
-        boolean autoflush = true;
-        out = new PrintWriter(socket.getOutputStream(), autoflush);
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream(), charsetName));
-
-        out.println(requestHead(uri, header));
-
-        String response = getResponse();
+        HttpResponse response = responseParser.stringToResponse(getResponse());
 
         socket.close();
         return response;
-    }
-
-    public String executePost(String uri, String header, String body) throws IOException {
-        InetAddress addres = InetAddress.getByName(url);
-
-        Socket socket = new Socket(addres, port);
-        boolean autoflush = true;
-        out = new PrintWriter(socket.getOutputStream(), autoflush);
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream(), charsetName));
-
-        out.println(requestPost(uri, header, body));
-
-        String response = getResponse();
-
-        socket.close();
-        return response;
-
     }
 
     private String getResponse() {

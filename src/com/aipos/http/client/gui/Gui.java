@@ -1,8 +1,11 @@
 package com.aipos.http.client.gui;
 
 import com.aipos.http.client.controller.Client;
-import com.aipos.http.client.parser.ResponseParser;
 
+import com.aipos.http.client.entity.CommandType;
+import com.aipos.http.client.entity.HttpRequest;
+import com.aipos.http.client.entity.HttpResponse;
+import com.aipos.http.client.parser.impl.ResponseParserImpl;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -33,11 +36,11 @@ public class Gui {
     private JTextArea responseTextArea;
     private JTextArea requestTextArea;
     private Client client;
-    private ResponseParser parser;
+    private ResponseParserImpl responseParser;
 
     public Gui() {
         client = new Client();
-        parser = new ResponseParser();
+        responseParser = new ResponseParserImpl();
         frame = new JFrame("HTTP Client");
         frame.setSize(1920, 1030);
         frame.setVisible(true);
@@ -57,66 +60,63 @@ public class Gui {
         getButton.addActionListener(e -> {
             String URI = this.uriTextArea.getText();
             String header = headerTextArea.getText();
-            String request = client.requestGet(URI, header);
-            String response = null;
+            HttpRequest request = new HttpRequest(CommandType.GET, URI, header);
+            HttpResponse response = null;
             try {
-                response = client.executeGet(URI, header);
+                response = client.executeRequest(request);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
 
             requestTextArea.setText(requestTextArea.getText() +
                     "\n----GET Request----\n"
-                    + request);
+                    + request.toString());
 
             responseTextArea.setText(responseTextArea.getText() +
                     "\n----GET Response----\n" +
-                    response);
-            String parsedResponse = parser.parseGet(response);
+                (response != null ? response.toString() : null));
         });
         headButton = new JButton("HEAD");
         headButton.addActionListener(e -> {
-            String URI = uriTextArea.getText();
+            String URI = this.uriTextArea.getText();
             String header = headerTextArea.getText();
-            String request = client.requestHead(URI, header);
-            String response = null;
+            HttpRequest request = new HttpRequest(CommandType.HEAD, URI, header);
+            HttpResponse response = null;
             try {
-                response = client.executeHead(URI, header);
+                response = client.executeRequest(request);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
 
             requestTextArea.setText(requestTextArea.getText() +
                     "\n----HEAD Request----\n"
-                    + request);
+                    + request.toString());
 
             responseTextArea.setText(responseTextArea.getText() +
                     "\n----HEAD Response----\n" +
-                    response);
-            String parsedResponse = parser.parseHead(response);
+                (response != null ? response.toString() : null));
         });
         postButton = new JButton("POST");
         postButton.addActionListener(e -> {
 
-            String URI = uriTextArea.getText();
+            String URI = this.uriTextArea.getText();
             String header = headerTextArea.getText();
             String body = bodyTextArea.getText();
-            String request = client.requestPost(URI, header, body);
-            String response = null;
+            HttpRequest request = new HttpRequest(CommandType.POST, URI, header, body);
+            HttpResponse response = null;
             try {
-                response = client.executePost(URI, header, body);
+                response = client.executeRequest(request);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
 
             requestTextArea.setText(requestTextArea.getText() +
-                    "\n----POST Request----\n"
-                    + request);
+                "\n----HEAD Request----\n"
+                + request.toString());
 
             responseTextArea.setText(responseTextArea.getText() +
-                    "\n----POST Response----\n" +
-                    response);
-            String parsedResponse = parser.parsePost(response);
+                "\n----HEAD Response----\n" +
+                (response != null ? response.toString() : null));
         });
         responseTextArea = new JTextArea(30, 30);
         requestTextArea = new JTextArea(10, 10);
@@ -137,11 +137,11 @@ public class Gui {
         headButton.setBounds(0, 50, 100, 50);
         postButton.setBounds(0, 100, 100, 50);
         uriLabel.setBounds(800, 150, 100, 50);
-        headerLabel.setBounds(300, 0, 100, 50);
+        headerLabel.setBounds(800, 400, 100, 50);
+        bodyLabel.setBounds(800, 700, 100, 50);
         uriScrollPane.setBounds(800, 200, 800, 200);
         headerScrollPane.setBounds(800, 450, 800, 250);
         bodyScrollPane.setBounds(800, 750, 800, 200);
-        bodyLabel.setBounds(100, 100, 100, 50);
         responseLabel.setBounds(0, 150, 100, 50);
         requestLabel.setBounds(0, 700, 200, 50);
         logScrollPane.setBounds(0, 200, 800, 500);
