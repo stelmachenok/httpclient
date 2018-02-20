@@ -32,9 +32,13 @@ public class ResponseParserImpl implements ResponseParser {
 
     p = Pattern.compile(RESPONSE_HEADER);
     m = p.matcher(str);
-    if (m.find()) {
-      String header = String.valueOf(str.substring(m.end(), str.length()));
-      request.setHeader(header);
+    while (m.find()) {
+      String header = String.valueOf(str.substring(m.start(), m.end()));
+      Pattern headerPattern = Pattern.compile(RESPONSE_DELIMITER);
+      Matcher headerMatcher = headerPattern.matcher(header);
+      String headerKey = header.substring(0, headerMatcher.start());
+      String headerValue = header.substring(headerMatcher.start(), header.length());
+      request.addHeader(headerKey, headerValue);
     }
 
     return request;

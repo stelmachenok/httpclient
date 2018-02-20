@@ -1,0 +1,62 @@
+
+Both empty
+
+HTTP/1.1 302 Found
+Server: nginx/1.12.2
+Date: Sun, 18 Feb 2018 18:57:59 GMT
+Content-Type: text/html; charset=UTF-8
+Content-Length: 0
+Connection: keep-alive
+Keep-Alive: timeout=15
+Location: index.php
+
+Correct pass
+
+HTTP/1.1 302 Found
+Server: nginx/1.12.2
+Date: Sun, 18 Feb 2018 18:56:24 GMT
+Content-Type: text/html; charset=windows-1251
+Content-Length: 0
+Connection: keep-alive
+Keep-Alive: timeout=15
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Set-Cookie: lsModified=no; expires=Tue, 20-Mar-2018 18:56:24 GMT; Max-Age=2592000
+Location: index.php
+
+Incorrect pass
+
+HTTP/1.1 302 Found
+Server: nginx/1.12.2
+Date: Sun, 18 Feb 2018 18:57:16 GMT
+Content-Type: text/html; charset=windows-1251
+Content-Length: 0
+Connection: keep-alive
+Keep-Alive: timeout=15
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Location: info.php?me=password_error
+
+Login empty
+
+HTTP/1.1 302 Found
+Server: nginx/1.12.2
+Date: Sun, 18 Feb 2018 18:50:44 GMT
+Content-Type: text/html; charset=UTF-8
+Content-Length: 0
+Connection: keep-alive
+Keep-Alive: timeout=15
+Location: index.php
+
+Pass empty
+
+HTTP/1.1 302 Found
+Server: nginx/1.12.2
+Date: Sun, 18 Feb 2018 18:49:34 GMT
+Content-Type: text/html; charset=UTF-8
+Content-Length: 0
+Connection: keep-alive
+Keep-Alive: timeout=15
+Location: index.php
