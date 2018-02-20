@@ -14,8 +14,6 @@ import java.net.Socket;
  * Created by y50-70 on 06.02.2018.
  */
 public class Client {
-
-    private final int basicBodyLength = 43;
     private final String url = "loveread.ec";
     private final String charsetName = "windows-1251";
     private final int port = 80;
@@ -52,29 +50,6 @@ public class Client {
             }
             sb.append((char) (i));
         }
-
         return sb.toString();
-    }
-
-    public String requestGet(String header, String uri) {
-        return "GET " + uri + " HTTP/1.1\n" +
-                header +
-                "\n";
-    }
-
-    public String requestHead(String header, String uri) {
-        return "HEAD " + uri + " HTTP/1.1\n" +
-                header +
-                "\n\n";
-    }
-
-    public String requestPost(String header, String uri, String body) {
-        int contentLength = body.length();
-        return "POST " + uri + " HTTP/1.1\n" +
-                header +
-                "\nContent-Length: " + contentLength +
-                "\n\n" +
-                body +
-                "\n\n";
     }
 }
