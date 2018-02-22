@@ -9,4 +9,6 @@ public class ParserConst {
   public static final String RESPONSE_MESSAGE = "\\d{3}.*";
   public static final String RESPONSE_HEADER = "(.)*:\\W(.)*";
   public static final String RESPONSE_DELIMITER = ":\\W";
+  public static final String HTML_CODE_BEGIN = "<html>";
+  public static final String HTML_CODE_END = "</html>";
 }

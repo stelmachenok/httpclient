@@ -4,6 +4,8 @@ import static com.aipos.http.client.parser.util.ParserConst.*;
 
 import com.aipos.http.client.entity.HttpResponse;
 import com.aipos.http.client.parser.ResponseParser;
+
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,35 +14,55 @@ import java.util.regex.Pattern;
  */
 public class ResponseParserImpl implements ResponseParser {
 
-  @Override
-  public HttpResponse stringToResponse(String str) {
-    HttpResponse request = new HttpResponse();
+    @Override
+    public HttpResponse stringToResponse(String str) {
+        HttpResponse request = new HttpResponse();
 
-    Pattern p = Pattern.compile(RESPONSE_CODE);
-    Matcher m = p.matcher(str);
-    if (m.find()) {
-      int code = Integer.valueOf(str.substring(m.end() - RESPONSE_CODE_LENGTH, m.end()));
-      request.setCode(code);
+        Pattern p = Pattern.compile(RESPONSE_CODE);
+        Matcher m = p.matcher(str);
+        if (m.find()) {
+            int code = Integer.valueOf(str.substring(m.end() - RESPONSE_CODE_LENGTH, m.end()));
+            request.setCode(code);
+        }
+
+        p = Pattern.compile(RESPONSE_MESSAGE);
+        m = p.matcher(str);
+        if (m.find()) {
+            String message = String.valueOf(str.substring(m.start() + RESPONSE_CODE_LENGTH + 1, m.end()));
+            request.setMessage(message);
+        }
+
+        Matcher htmlBeginMatcher = Pattern.compile(HTML_CODE_BEGIN).matcher(str);
+        Matcher htmlEndMatcher = Pattern.compile(HTML_CODE_BEGIN).matcher(str);
+
+        Integer htmlBeginIndex = null;
+        Integer htmlEndIndex = null;
+
+        if (htmlBeginMatcher.find() && htmlEndMatcher.find()) {
+            htmlBeginIndex = htmlBeginMatcher.start();
+            htmlEndIndex = htmlEndMatcher.end();
+        }
+
+
+        p = Pattern.compile(RESPONSE_HEADER);
+        m = p.matcher(str);
+        while (m.find()) {
+            int headerStartIndex = m.start();
+            int headerEndIndex = m.end();
+            if (htmlBeginIndex != null && headerEndIndex < htmlBeginIndex) {
+                String header = String.valueOf(str.substring(headerStartIndex, headerEndIndex));
+                Pattern headerPattern = Pattern.compile(RESPONSE_DELIMITER);
+                Matcher headerMatcher = headerPattern.matcher(header);
+                String headerKey = "";
+                String headerValue = "";
+                if (headerMatcher.find()) {
+                    headerKey = header.substring(0, headerMatcher.start());
+                    headerValue = header.substring(headerMatcher.start(), header.length());
+                }
+                request.addHeader(headerKey, headerValue);
+            }
+        }
+
+        return request;
     }
-
-    p = Pattern.compile(RESPONSE_MESSAGE);
-    m = p.matcher(str);
-    if (m.find()) {
-      String message = String.valueOf(str.substring(m.start() + RESPONSE_CODE_LENGTH + 1, m.end()));
-      request.setMessage(message);
-    }
-
-    p = Pattern.compile(RESPONSE_HEADER);
-    m = p.matcher(str);
-    while (m.find()) {
-      String header = String.valueOf(str.substring(m.start(), m.end()));
-      Pattern headerPattern = Pattern.compile(RESPONSE_DELIMITER);
-      Matcher headerMatcher = headerPattern.matcher(header);
-      String headerKey = header.substring(0, headerMatcher.start());
-      String headerValue = header.substring(headerMatcher.start(), header.length());
-      request.addHeader(headerKey, headerValue);
-    }
-
-    return request;
-  }
 }
