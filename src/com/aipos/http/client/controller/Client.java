@@ -2,6 +2,8 @@ package com.aipos.http.client.controller;
 
 import com.aipos.http.client.entity.HttpRequest;
 import com.aipos.http.client.entity.HttpResponse;
+import com.aipos.http.client.exception.EmptyHostException;
+import com.aipos.http.client.parser.ResponseParser;
 import com.aipos.http.client.parser.impl.ResponseParserImpl;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,18 +13,20 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 /**
- * Created by y50-70 on 06.02.2018.
+ * @author maksim.stelmachonak
  */
 public class Client {
-    private final String url = "loveread.ec";
     private final String charsetName = "windows-1251";
     private final int port = 80;
     private PrintWriter out;
     private BufferedReader in;
-    private ResponseParserImpl responseParser = new ResponseParserImpl();
+    private ResponseParser responseParser = new ResponseParserImpl();
 
-    public HttpResponse executeRequest(HttpRequest request) throws IOException {
-        InetAddress addres = InetAddress.getByName(url);
+    public HttpResponse executeRequest(HttpRequest request) throws IOException, EmptyHostException {
+        if (request.getHeader("Host") == null){
+            throw new EmptyHostException("Host must not be empty!");
+        }
+        InetAddress addres = InetAddress.getByName(request.getHeader("Host"));
 
         Socket socket = new Socket(addres, port);
         boolean autoflush = true;

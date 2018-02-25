@@ -73,7 +73,8 @@ public class HttpResponse {
         sb.append("HTTP/1.1 ").append(code).append(" ").append(message).append("\n");
         Set<String> set = headers.keySet();
         set.forEach((k)->sb.append(k).append(": ").append(headers.get(k)).append("\n"));
-        sb.append("\n\n");
+        sb.append(htmlCode).append("\n");
+        sb.append("\n");
         return sb.toString();
     }
 }

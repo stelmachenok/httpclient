@@ -5,6 +5,7 @@ import com.aipos.http.client.controller.Client;
 import com.aipos.http.client.entity.CommandType;
 import com.aipos.http.client.entity.HttpRequest;
 import com.aipos.http.client.entity.HttpResponse;
+import com.aipos.http.client.exception.EmptyHostException;
 import com.aipos.http.client.parser.impl.ResponseParserImpl;
 
 import javax.swing.*;
@@ -27,6 +28,17 @@ public class Gui {
     private JTextField uriTextField;
     private JScrollPane requestParamScrollPane;
     private JTable requestParamTable;
+    private JLabel logLabel;
+    private JTextArea logTextArea;
+    private JScrollPane logScrollPane;
+    private JLabel statusCodeHeaderLabel;
+    private JLabel statusCodeLabel;
+    private JLabel messageHeaderLabel;
+    private JLabel messageHeader;
+    private JScrollPane responseParamScrollPane;
+    private JTable responseParamTable;
+
+
     private Client client;
     private ResponseParserImpl responseParser;
 
@@ -68,7 +80,15 @@ public class Gui {
                 response = client.executeRequest(request);
             } catch (IOException e1) {
                 e1.printStackTrace();
+            } catch (EmptyHostException e1) {
+                JOptionPane.showMessageDialog(frame,
+                        e1.getMessage(),
+                        "Empty host",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
             }
+
+            logTextArea.setText(logTextArea.getText() + request + response);
         });
         panel.add(executeButton, c);
         c.gridx = 0;
@@ -131,7 +151,6 @@ public class Gui {
                 {"User-Agent", ""},
                 {"Upgrade", ""}
         };
-
         DefaultTableModel tableModel = new DefaultTableModel(data, requestColumnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -141,6 +160,65 @@ public class Gui {
         requestParamTable = new JTable(tableModel);
         requestParamScrollPane = new JScrollPane(requestParamTable);
         panel.add(requestParamScrollPane, c);
+
+
+        c.gridx = 4;
+        c.gridy = 0;
+        c.gridwidth = 4;
+        c.gridheight = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        logLabel = new JLabel("Log: ");
+        panel.add(logLabel, c);
+        c.gridx = 4;
+        c.gridy = 1;
+        c.gridwidth = 4;
+        c.gridheight = 12;
+        c.fill = GridBagConstraints.BOTH;
+//        c.weightx = 0.9;
+        c.ipadx = 500;
+        logTextArea = new JTextArea();
+        logScrollPane = new JScrollPane(logTextArea);
+        panel.add(logScrollPane, c);
+
+
+        c.gridx = 8;
+        c.gridy = 0;
+        c.gridwidth = 2;
+        c.gridheight = 1;
+        c.ipadx = 0;
+        statusCodeHeaderLabel = new JLabel("Status code: ");
+        panel.add(statusCodeHeaderLabel, c);
+        c.gridx = 10;
+        c.gridy = 0;
+        statusCodeLabel = new JLabel();
+        panel.add(statusCodeLabel, c);
+        c.gridx = 8;
+        c.gridy = 1;
+        messageHeaderLabel = new JLabel("Message: ");
+        panel.add(messageHeaderLabel, c);
+        c.gridx = 10;
+        c.gridy = 1;
+        messageHeader = new JLabel();
+        panel.add(messageHeader, c);
+
+
+        c.gridx = 8;
+        c.gridy = 2;
+        c.gridwidth = 4;
+        c.gridheight = 11;
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.CENTER;
+        String[] responseColumnNames = {"Header", "Value"};
+        tableModel = new DefaultTableModel(null, responseColumnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column != 0;
+            }
+        };
+        responseParamTable = new JTable(tableModel);
+        responseParamScrollPane = new JScrollPane(responseParamTable);
+        panel.add(responseParamScrollPane, c);
+
 
         panel.updateUI();
     }
