@@ -16,7 +16,7 @@ public class HttpResponse {
     public HttpResponse() {
     }
 
-    public HttpResponse(int code, String message,  Map<String, String> headers, String htmlCode) {
+    public HttpResponse(int code, String message, Map<String, String> headers, String htmlCode) {
         this.code = code;
         this.message = message;
         this.headers = headers;
@@ -39,15 +39,15 @@ public class HttpResponse {
         this.message = message;
     }
 
-    public void addHeader(String key, String value){
+    public void addHeader(String key, String value) {
         this.headers.put(key, value);
     }
 
-    public void removeHeader(String key){
+    public void removeHeader(String key) {
         this.headers.remove(key);
     }
 
-    public String getHeader(String key){
+    public String getHeader(String key) {
         return headers.get(key);
     }
 
@@ -72,8 +72,10 @@ public class HttpResponse {
         StringBuilder sb = new StringBuilder();
         sb.append("HTTP/1.1 ").append(code).append(" ").append(message).append("\n");
         Set<String> set = headers.keySet();
-        set.forEach((k)->sb.append(k).append(": ").append(headers.get(k)).append("\n"));
-        sb.append(htmlCode).append("\n");
+        set.forEach((k) -> sb.append(k).append(": ").append(headers.get(k)).append("\n"));
+        if (htmlCode != null) {
+            sb.append(htmlCode).append("\n");
+        }
         sb.append("\n");
         return sb.toString();
     }

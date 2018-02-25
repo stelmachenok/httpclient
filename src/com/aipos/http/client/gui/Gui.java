@@ -13,17 +13,18 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Map;
 
 /**
- * Created by maksim.stelmachonak.
+ * @author maksim.stelmachonak
  */
 public class Gui {
     private JFrame frame;
     private JPanel panel;
     private JComboBox comboBox;
     private JButton executeButton;
-    private JLabel parametersLabel;
-    private JTextField parametersTextField;
+    private JLabel bodyLabel;
+    private JTextField bodyTextField;
     private JLabel uriLabel;
     private JTextField uriTextField;
     private JScrollPane requestParamScrollPane;
@@ -52,7 +53,7 @@ public class Gui {
         panel = new JPanel(new GridBagLayout());
         frame.add(panel);
 
-        GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
+        GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0);
         comboBox = new JComboBox(CommandType.values());
         panel.add(comboBox, c);
         c.gridx = 2;
@@ -65,7 +66,7 @@ public class Gui {
             request.setCommand(CommandType.valueOf(String.valueOf(comboBox.getSelectedItem())));
             request.setUri(uriTextField.getText());
             TableModel tableModel = requestParamTable.getModel();
-            int rowCount = requestParamTable.getModel().getRowCount();
+            int rowCount = tableModel.getRowCount();
             for (int i = 0; i < rowCount; i++) {
                 String value = String.valueOf(tableModel.getValueAt(i, 1));
                 if (!value.equals("")) {
@@ -73,7 +74,8 @@ public class Gui {
                     request.addHeader(key, value);
                 }
             }
-            request.setBody(parametersTextField.getText());
+
+            request.setBody(bodyTextField.getText());
 
             HttpResponse response = null;
             try {
@@ -88,36 +90,56 @@ public class Gui {
                 return;
             }
 
-            logTextArea.setText(logTextArea.getText() + request + response);
+            String[] responseColumnNames = {"Header", "Value"};
+            DefaultTableModel responseTableModel = new DefaultTableModel(null, responseColumnNames) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return column != 0;
+                }
+            };
+            Map<String, String> headers = response.getHeaders();
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                Object[] responseHeaders = {entry.getKey(), entry.getValue()};
+                responseTableModel.addRow(responseHeaders);
+            }
+            responseParamTable.setModel(responseTableModel);
+
+            logTextArea.append(request.toString());
+            logTextArea.append(response.toString());
+
+            statusCodeLabel.setText(String.valueOf(response.getCode()));
+            messageHeader.setText(String.valueOf(response.getMessage()));
         });
         panel.add(executeButton, c);
         c.gridx = 0;
         c.gridy = 1;
         c.gridwidth = 4;
-        c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.LINE_START;
         uriLabel = new JLabel("URI: ");
         panel.add(uriLabel, c);
         c.gridx = 0;
         c.gridy = 2;
+        c.fill = GridBagConstraints.HORIZONTAL;
         uriTextField = new JTextField();
         panel.add(uriTextField, c);
         c.gridx = 0;
         c.gridy = 3;
         c.gridwidth = 4;
+        c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.LINE_START;
-        parametersLabel = new JLabel("Paramaters:");
-        panel.add(parametersLabel, c);
+        bodyLabel = new JLabel("Body:");
+        panel.add(bodyLabel, c);
         c.gridx = 0;
         c.gridy = 4;
         c.gridwidth = 4;
         c.fill = GridBagConstraints.HORIZONTAL;
-        parametersTextField = new JTextField(20);
-        panel.add(parametersTextField, c);
+        bodyTextField = new JTextField();
+        panel.add(bodyTextField, c);
         c.gridx = 0;
         c.gridy = 5;
         c.gridwidth = 4;
         c.gridheight = 8;
+        c.fill = GridBagConstraints.BOTH;
         String[] requestColumnNames = {"Header", "Value"};
         String[][] data = {
                 {"Accept", ""},
@@ -166,7 +188,8 @@ public class Gui {
         c.gridy = 0;
         c.gridwidth = 4;
         c.gridheight = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LINE_START;
         logLabel = new JLabel("Log: ");
         panel.add(logLabel, c);
         c.gridx = 4;
@@ -176,7 +199,7 @@ public class Gui {
         c.fill = GridBagConstraints.BOTH;
 //        c.weightx = 0.9;
         c.ipadx = 500;
-        logTextArea = new JTextArea();
+        logTextArea = new JTextArea(20,20);
         logScrollPane = new JScrollPane(logTextArea);
         panel.add(logScrollPane, c);
 
@@ -186,19 +209,27 @@ public class Gui {
         c.gridwidth = 2;
         c.gridheight = 1;
         c.ipadx = 0;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LINE_START;
         statusCodeHeaderLabel = new JLabel("Status code: ");
         panel.add(statusCodeHeaderLabel, c);
         c.gridx = 10;
         c.gridy = 0;
-        statusCodeLabel = new JLabel();
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LINE_END;
+        statusCodeLabel = new JLabel("");
         panel.add(statusCodeLabel, c);
         c.gridx = 8;
         c.gridy = 1;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LINE_START;
         messageHeaderLabel = new JLabel("Message: ");
         panel.add(messageHeaderLabel, c);
         c.gridx = 10;
         c.gridy = 1;
-        messageHeader = new JLabel();
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LINE_END;
+        messageHeader = new JLabel("");
         panel.add(messageHeader, c);
 
 
@@ -223,15 +254,3 @@ public class Gui {
         panel.updateUI();
     }
 }
-/*
- *       gridx, gridy - Coordinates of left upper component's corner. The leftmost column has address gridx=0 and the top row has address gridy=0.
- *       gridwidth, gridheight - the number of cells the component uses. The default value is 1
- *       fill - for fill space horizontally (GridBagConstraints.HORIZONTAL ) or vertically (GridBagConstraints.VERTICAL). Default NONE
- *       weightx, weighty - how much to add to the size of the component. Width - minimum width plus ipadx*2 pixels. Height - minimum height plus ipady*2 pixels
- *       insets - indent in pixels. new Insets(top, left, bottom, right)
- *       anchor - determine where (within the area) to place the component. GridBagConstraints.
- *       FIRST_LINE_START    PAGE_START  FIRST_LINE_END
- *       LINE_START          CENTER      LINE_END
- *       LAST_LINE_START     PAGE_END    LAST_LINE_END
- *       weightx, weighty - stretch coefficient. The greater the coefficient, the greater the stretching. Default 0.0, max 1.0. If dont want dispose all components on center
- * */

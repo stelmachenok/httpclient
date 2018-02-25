@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by y50-70 on 19.02.2018.
+ * @author maksim.stelmachonak
  */
 public class HttpRequest {
     private CommandType command;
@@ -79,7 +79,7 @@ public class HttpRequest {
         sb.append(command.getName()).append(" ").append(uri).append(" HTTP/1.1\n");
         Set<String> set = headers.keySet();
         set.forEach((k)->sb.append(k).append(": ").append(headers.get(k)).append("\n"));
-        sb.append("\n\n");
+        sb.append("\n");
         if (body != null && !body.equals("")){
             sb.append(body).append("\n\n");
         }

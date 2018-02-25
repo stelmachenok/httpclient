@@ -1,7 +1,7 @@
 package com.aipos.http.client.entity;
 
 /**
- * Created by y50-70 on 19.02.2018.
+ * @author maksim.stelmachonak
  */
 public enum CommandType {
     GET("GET"),HEAD("HEAD"),POST("POST");
