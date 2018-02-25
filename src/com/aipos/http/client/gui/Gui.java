@@ -4,12 +4,14 @@ import com.aipos.http.client.controller.Client;
 
 import com.aipos.http.client.entity.CommandType;
 import com.aipos.http.client.entity.HttpRequest;
+import com.aipos.http.client.entity.HttpResponse;
 import com.aipos.http.client.parser.impl.ResponseParserImpl;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * Created by maksim.stelmachonak.
@@ -48,16 +50,24 @@ public class Gui {
         executeButton = new JButton("Execute");
         executeButton.addActionListener(e -> {
             HttpRequest request = new HttpRequest();
-
-
+            request.setCommand(CommandType.valueOf(String.valueOf(comboBox.getSelectedItem())));
+            request.setUri(uriTextField.getText());
             TableModel tableModel = requestParamTable.getModel();
             int rowCount = requestParamTable.getModel().getRowCount();
             for (int i = 0; i < rowCount; i++) {
                 String value = String.valueOf(tableModel.getValueAt(i, 1));
                 if (!value.equals("")) {
                     String key = String.valueOf(tableModel.getValueAt(i, 0));
-
+                    request.addHeader(key, value);
                 }
+            }
+            request.setBody(parametersTextField.getText());
+
+            HttpResponse response = null;
+            try {
+                response = client.executeRequest(request);
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
         });
         panel.add(executeButton, c);

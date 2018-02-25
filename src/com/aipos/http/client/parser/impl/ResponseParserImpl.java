@@ -33,14 +33,15 @@ public class ResponseParserImpl implements ResponseParser {
         }
 
         Matcher htmlBeginMatcher = Pattern.compile(HTML_CODE_BEGIN).matcher(str);
-        Matcher htmlEndMatcher = Pattern.compile(HTML_CODE_BEGIN).matcher(str);
+        Matcher htmlEndMatcher = Pattern.compile(HTML_CODE_END).matcher(str);
 
         Integer htmlBeginIndex = null;
-        Integer htmlEndIndex = null;
+        Integer htmlEndIndex;
 
         if (htmlBeginMatcher.find() && htmlEndMatcher.find()) {
             htmlBeginIndex = htmlBeginMatcher.start();
             htmlEndIndex = htmlEndMatcher.end();
+            request.setHtmlCode(str.substring(htmlBeginIndex, htmlEndIndex));
         }
 
 
@@ -57,12 +58,11 @@ public class ResponseParserImpl implements ResponseParser {
                 String headerValue = "";
                 if (headerMatcher.find()) {
                     headerKey = header.substring(0, headerMatcher.start());
-                    headerValue = header.substring(headerMatcher.start(), header.length());
+                    headerValue = header.substring(headerMatcher.end(), header.length());
                 }
                 request.addHeader(headerKey, headerValue);
             }
         }
-
         return request;
     }
 }

@@ -5,20 +5,22 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by y50-70 on 19.02.2018.
+ * @author maksim.stelmachonak
  */
 public class HttpResponse {
     private int code;
     private String message;
     private Map<String, String> headers = new HashMap<>();
+    private String htmlCode;
 
     public HttpResponse() {
     }
 
-    public HttpResponse(int code, String message,  Map<String, String> headers) {
+    public HttpResponse(int code, String message,  Map<String, String> headers, String htmlCode) {
         this.code = code;
         this.message = message;
         this.headers = headers;
+        this.htmlCode = htmlCode;
     }
 
     public int getCode() {
@@ -53,8 +55,16 @@ public class HttpResponse {
         return headers;
     }
 
-    public void setHeader(Map<String, String> headers) {
+    public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
+    }
+
+    public String getHtmlCode() {
+        return htmlCode;
+    }
+
+    public void setHtmlCode(String htmlCode) {
+        this.htmlCode = htmlCode;
     }
 
     @Override
