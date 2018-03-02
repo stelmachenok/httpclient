@@ -14,7 +14,6 @@ public class ResponseParserImpl implements ResponseParser {
 
     @Override
     public HttpResponse stringToResponse(String str) {
-        System.out.println(str);
         HttpResponse response = new HttpResponse();
 
         Pattern p = Pattern.compile(RESPONSE_CODE);

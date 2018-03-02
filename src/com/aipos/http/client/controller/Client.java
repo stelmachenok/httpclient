@@ -33,7 +33,6 @@ public class Client {
         out = new PrintWriter(socket.getOutputStream(), autoflush);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream(), charsetName));
 
-        System.out.println(request);
         out.println(request.toString());
 
         HttpResponse response = responseParser.stringToResponse(getResponse());
